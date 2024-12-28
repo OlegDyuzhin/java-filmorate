@@ -26,7 +26,7 @@ class FilmControllerTest extends BaseControllerTest {
         film.setName("Name");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 10, 10));
-        film.setDuration(160L);
+        film.setDuration(160);
         return film;
     }
 
@@ -68,7 +68,7 @@ class FilmControllerTest extends BaseControllerTest {
         film2.setName("Film2");
         film2.setDescription("New Description");
         film2.setReleaseDate(LocalDate.of(1990, 2, 2));
-        film2.setDuration(120L);
+        film2.setDuration(120);
 
         filmJson = objectMapper.writeValueAsString(film2);
         httpResponse = getResponse(path, RequestMethod.PUT, filmJson);
@@ -99,7 +99,7 @@ class FilmControllerTest extends BaseControllerTest {
         assertEquals(400, httpResponse.statusCode(), "Пропущена дата ранее заданной");
 
         film = setDefaultFilm();
-        film.setDuration(-1L);
+        film.setDuration(-1);
         userJson = objectMapper.writeValueAsString(film);
         httpResponse = getResponse(path, RequestMethod.POST, userJson);
         assertEquals(400, httpResponse.statusCode(), "Пропущена отрицательная продолжительность");

@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.DuplicateException;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class InMemoryFilmStorage {
         if (filmStorage.containsKey(film.getId())) {
             filmStorage.put(film.getId(), film);
         } else {
-            throw new FilmNotFoundException("Обновляемого фильма не найдено");
+            throw new NotFoundException("Обновляемого фильма не найдено");
         }
     }
 

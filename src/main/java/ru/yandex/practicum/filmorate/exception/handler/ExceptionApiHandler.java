@@ -7,12 +7,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.DuplicateException;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Slf4j
 @RestControllerAdvice
@@ -23,23 +21,15 @@ public class ExceptionApiHandler {
         log.warn(exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorMessage(exception.getMessage()));
+                .body(new ErrorMessage(exception.getMessage(), exception.getStackTrace()[0].getFileName()));
     }
 
-    @ExceptionHandler(FilmNotFoundException.class)
-    public ResponseEntity<ErrorMessage> filmNotFoundException(FilmNotFoundException exception) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorMessage> notFoundException(NotFoundException exception) {
         log.warn(exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorMessage(exception.getMessage()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorMessage> userNotFoundException(UserNotFoundException exception) {
-        log.warn(exception.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorMessage(exception.getMessage()));
+                .body(new ErrorMessage(exception.getMessage(), exception.getStackTrace()[0].getFileName()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -47,12 +37,10 @@ public class ExceptionApiHandler {
         log.warn(exception.getMessage());
 
         final List<ErrorMessage> fieldErrors = exception.getBindingResult().getFieldErrors().stream()
-                .map(fieldError -> fieldError.getDefaultMessage())
-                .map(s -> new ErrorMessage(s))
+                .map(s -> new ErrorMessage(s.getDefaultMessage(), s.getObjectName()))
                 .collect(Collectors.toList());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ValidationErrorResponse(fieldErrors));
     }
-
 }

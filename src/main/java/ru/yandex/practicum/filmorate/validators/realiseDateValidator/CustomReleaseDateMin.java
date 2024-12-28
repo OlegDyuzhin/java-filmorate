@@ -12,9 +12,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ReleaseDateValidator.class)
 public @interface CustomReleaseDateMin {
-    String message() default "дата релиза — менее 28 декабря 1895 года";
+    String message() default "дата релиза — менее заданной";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    String value();
 }

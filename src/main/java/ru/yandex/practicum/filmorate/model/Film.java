@@ -1,12 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.validators.positiveDateValidator.CustomPositiveDuration;
 import ru.yandex.practicum.filmorate.validators.realiseDateValidator.CustomReleaseDateMin;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 
@@ -20,17 +19,9 @@ public class Film {
     @Size(max = 200, message = "максимальная длина описания — 200 символов")
     private String description;
 
-    @CustomReleaseDateMin
+    @CustomReleaseDateMin(message = "Дата релиза менее 1895-12-28", value = "1895-12-28")
     private LocalDate releaseDate;
 
-    @CustomPositiveDuration
-    private Duration duration;
-
-    public Long getDuration() {
-        return duration.toMinutes();
-    }
-
-    public void setDuration(Long durationOfMinutes) {
-        this.duration = Duration.ofMinutes(durationOfMinutes);
-    }
+    @Positive
+    private Integer duration;
 }
