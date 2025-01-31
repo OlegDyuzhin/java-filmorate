@@ -11,4 +11,12 @@ public interface FilmService {
     void addFilm(Film film);
 
     void updateFilm(Film film);
+
+    void addLikeFilm(Long filmId, Long userId);
+
+    void removeLikeFilm(Long filmId, Long userId);
+
+    List<Film> getPopularFilmOnLike(Integer countFilms);
+
+    Film getFilmOnId(Long filmId);
 }

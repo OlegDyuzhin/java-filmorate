@@ -43,4 +43,12 @@ public class ExceptionApiHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ValidationErrorResponse(fieldErrors));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> internalServerException(Exception exception) {
+        log.error(exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorMessage(exception.getMessage(), exception.getStackTrace()[0].getFileName()));
+    }
 }
