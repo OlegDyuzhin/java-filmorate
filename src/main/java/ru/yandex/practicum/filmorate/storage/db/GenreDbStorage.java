@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -21,12 +20,11 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class GenreDbStorage implements GenreStorage {
-    private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<Genre> getGenres() {
-        return jdbcTemplate.query("SELECT * FROM genre", new GenreMapper());
+        return namedParameterJdbcTemplate.query("SELECT * FROM genre", new GenreMapper());
     }
 
     @Override
@@ -48,8 +46,10 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre getGenre(int id) {
-        String genreTableQuery = "SELECT * FROM genre WHERE id = ?";
-        List<Genre> genre = jdbcTemplate.query(genreTableQuery, new GenreMapper(), id);
+        String genreTableQuery = "SELECT * FROM genre WHERE id = :id";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        List<Genre> genre = namedParameterJdbcTemplate.query(genreTableQuery, params, new GenreMapper());
         if (genre.isEmpty()) {
             throw new NotFoundException("Жанр с id " + id + " не найден");
         }
@@ -60,7 +60,7 @@ public class GenreDbStorage implements GenreStorage {
     public Map<Long, List<Genre>> getAllGenresByFilms() {
         String sql = "SELECT * FROM film_genre fg JOIN genre g ON fg.genre_id = g.id";
         Map<Long, List<Genre>> allGenresByFilms = new HashMap<>();
-        jdbcTemplate.query(sql, rs -> {
+        namedParameterJdbcTemplate.query(sql, rs -> {
             Long filmId = rs.getLong("film_id");
             Genre genre = new Genre();
             genre.setId(rs.getInt("genre_id"));
