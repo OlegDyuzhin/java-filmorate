@@ -8,10 +8,12 @@ import ru.yandex.practicum.filmorate.validators.realiseDateValidator.CustomRelea
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
 public class Film {
+
     private Long id;
     private Set<Long> likeId = new HashSet<>();
 
@@ -26,6 +28,9 @@ public class Film {
 
     @Positive
     private Integer duration;
+
+    private Mpa mpa;
+    private List<Genre> genres;
 
     public int getAmountLikes() {
         return likeId.size();

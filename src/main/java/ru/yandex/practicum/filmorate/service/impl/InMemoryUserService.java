@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -22,8 +21,8 @@ public class InMemoryUserService implements UserService {
     }
 
     @Override
-    public void createUser(User user) {
-        storage.createUser(user);
+    public User createUser(User user) {
+        return storage.createUser(user);
     }
 
     @Override
@@ -33,34 +32,22 @@ public class InMemoryUserService implements UserService {
 
     @Override
     public void addFriends(Long userId, Long friendsId) {
-        storage.getUserToId(userId).getFriendsId().add(friendsId);
-        storage.getUserToId(friendsId).getFriendsId().add(userId);
+        storage.addFriends(userId, friendsId);
     }
 
     @Override
     public void deleteFriend(Long userId, Long friendsId) {
-        storage.getUserToId(userId).getFriendsId().remove(friendsId);
-        storage.getUserToId(friendsId).getFriendsId().remove(userId);
+        storage.removeFriend(userId, friendsId);
     }
 
     @Override
     public List<User> getAllFriends(Long userId) {
-        List<User> friends = new ArrayList<>();
-        for (Long friendId : storage.getUserToId(userId).getFriendsId()) {
-            friends.add(storage.getUserToId(friendId));
-        }
-        return friends;
+        return List.copyOf(storage.getFriends(userId));
     }
 
     @Override
     public List<User> getCommonFriends(Long userId, Long commonUserId) {
-        List<User> friends = new ArrayList<>();
-        for (Long friendId : storage.getUserToId(userId).getFriendsId()) {
-            if (storage.getUserToId(commonUserId).getFriendsId().contains(friendId)) {
-                friends.add(storage.getUserToId(friendId));
-            }
-        }
-        return friends;
+        return List.copyOf(storage.getCommonFriends(userId, commonUserId));
     }
 
     @Override

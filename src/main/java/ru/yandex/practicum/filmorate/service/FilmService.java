@@ -8,7 +8,7 @@ public interface FilmService {
 
     List<Film> getAllFilms();
 
-    void addFilm(Film film);
+    Film addFilm(Film film);
 
     void updateFilm(Film film);
 
